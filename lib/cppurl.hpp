@@ -3,6 +3,7 @@
 
 #include <curl/curl.h>
 #include <string>
+#include <map>
 
 namespace marcelb {
 
@@ -14,13 +15,43 @@ class Curl {
     CURL *curl;
     CURLcode res;
     string readBuffer;
-
-    
+    struct curl_slist *headers = NULL;
+    string _useragent;
 
     public:
-    // Curl();
-    string request(const string& req);
 
+    /**
+     * Postavi zaglavlje s ključem i vrijednošću
+     * Novi pozivi ne brišu stara zaglavlja, ponovljena se prepišu
+    */
+    Curl& header(const string& key, const string& value);
+
+    /**
+     * Postavi zaglavlja iz mape
+     * Ponovan poziv prepisat će ona zaglavlja koja postoje
+    */
+    Curl& header(const map<string, string> &_headers);
+
+    /**
+     * Postavi u zaglavlje User-Agent
+    */
+    Curl& useragent(const string& useragent_);
+
+    /**
+     * Izvršiv HTTP GET zahtjev
+     * Vraća string HTTP tjela
+    */
+    string get(const string& req);
+
+    /**
+     * Obriši spremljeno zaglavlje
+    */
+    Curl& clearheader();
+
+    /**
+     * Obrši trenutnog User-Agent -a
+    */
+    Curl& clearuseragent();
 
 };
 

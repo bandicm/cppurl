@@ -3,17 +3,42 @@
 
 using namespace marcelb;
 
-// marcelb::Curl::Curl() {
-// }
+static size_t marcelb::WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
+    ((std::string*)userp)->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
 
+Curl& marcelb::Curl::header(const string& key, const string& value) {
+    headers = curl_slist_append(headers, string(key + ": " + value).c_str());
+    return *this;
+}
 
-string marcelb::Curl::request(const string& req){
+Curl& marcelb::Curl::header(const map<string, string> &_headers) {
+    for (auto h : _headers) {
+        header(h.first, h.second);
+    }
+
+    return *this;
+}
+
+Curl& marcelb::Curl::useragent(const string& useragent_) {
+    _useragent = useragent_;
+    return *this;
+}
+
+string marcelb::Curl::get(const string& req){
     curl = curl_easy_init();
 
     readBuffer.clear();
     
     if(curl) {
         curl_easy_setopt(curl, CURLOPT_URL, req.c_str());
+        if (headers != NULL) {
+            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        }
+        if (!_useragent.empty()) {
+            curl_easy_setopt(curl, CURLOPT_USERAGENT, _useragent.c_str());
+        }
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
         res = curl_easy_perform(curl);
@@ -23,8 +48,12 @@ string marcelb::Curl::request(const string& req){
     return readBuffer;
 }
 
+Curl& marcelb::Curl::clearheader() {
+    headers = NULL;
+    return *this;
+}
 
-static size_t marcelb::WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
-    ((std::string*)userp)->append((char*)contents, size * nmemb);
-    return size * nmemb;
+Curl& marcelb::Curl::clearuseragent() {
+    _useragent.clear();
+    return *this;
 }
