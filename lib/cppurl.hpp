@@ -4,6 +4,7 @@
 #include <curl/curl.h>
 #include <string>
 #include <map>
+#include <iostream>
 
 namespace marcelb {
 
@@ -18,6 +19,7 @@ class Curl {
     struct curl_slist *headers = NULL;
     string _useragent;
     long _timeout = 0;
+    bool _sslvalidate = true;
 
     public:
 
@@ -43,6 +45,12 @@ class Curl {
     */
 
     Curl& timeout(const long _timeout);
+
+    /**
+     * Omogući/onemogući validaciju certifikata kod SSL veza
+    */
+
+    Curl& sslvalidate(const bool sslvalidate_);
 
     /**
      * Izvršiv HTTP GET zahtjev

@@ -31,6 +31,10 @@ Curl& marcelb::Curl::timeout(const long timeout_) {
     return *this;
 }
 
+Curl& marcelb::Curl::sslvalidate(const bool sslvalidate_) {
+    _sslvalidate = sslvalidate_;
+    return *this;
+}
 
 string marcelb::Curl::get(const string& req){
     curl = curl_easy_init();
@@ -47,6 +51,10 @@ string marcelb::Curl::get(const string& req){
         }
         if (_timeout > 0) {
             curl_easy_setopt (curl, CURLOPT_TIMEOUT_MS , _timeout);
+        }
+        if (!_sslvalidate) {
+            curl_easy_setopt (curl, CURLOPT_SSL_VERIFYPEER, _sslvalidate ? 1 : 0);
+            curl_easy_setopt (curl, CURLOPT_SSL_VERIFYHOST, _sslvalidate ? 1 : 0);
         }
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
