@@ -52,8 +52,9 @@ int main () {
     for (uint i=0; i<4; i++) {
         debx_responses.push_back(async(launch::async, [&](){
             Curl rest;
-            rest.timeout(600);
-            return rest.get("https://reqres.iin/api/users/2");
+            // rest.timeout(6000);
+            rest.sslvalidate(false);
+            return rest.get("https://lab-it.ddns.net");
         }));
     }
 
