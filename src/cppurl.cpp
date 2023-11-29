@@ -28,6 +28,7 @@ Curl& marcelb::Curl::useragent(const string& useragent_) {
 
 Curl& marcelb::Curl::timeout(const long timeout_) {
     _timeout = timeout_;
+    return *this;
 }
 
 
