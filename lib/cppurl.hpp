@@ -17,6 +17,7 @@ class Curl {
     string readBuffer;
     struct curl_slist *headers = NULL;
     string _useragent;
+    long _timeout = 0;
 
     public:
 
@@ -36,6 +37,12 @@ class Curl {
      * Postavi u zaglavlje User-Agent
     */
     Curl& useragent(const string& useragent_);
+
+    /**
+     * Postavi vrijeme isteka zahtjeva
+    */
+
+    Curl& timeout(const long _timeout);
 
     /**
      * Izvršiv HTTP GET zahtjev

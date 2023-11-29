@@ -26,6 +26,11 @@ Curl& marcelb::Curl::useragent(const string& useragent_) {
     return *this;
 }
 
+Curl& marcelb::Curl::timeout(const long timeout_) {
+    _timeout = timeout_;
+}
+
+
 string marcelb::Curl::get(const string& req){
     curl = curl_easy_init();
 
@@ -38,6 +43,9 @@ string marcelb::Curl::get(const string& req){
         }
         if (!_useragent.empty()) {
             curl_easy_setopt(curl, CURLOPT_USERAGENT, _useragent.c_str());
+        }
+        if (_timeout > 0) {
+            curl_easy_setopt (curl, CURLOPT_TIMEOUT_MS , _timeout);
         }
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
