@@ -11,10 +11,17 @@ using namespace marcelb;
 
 int main () {
 
-    // Curl rest;
-    // string header_value = "jebiga";
-    // rest.header("API", header_value);
-    // cout << rest.get("https://reqres.in/api/users/2") << endl;
+    Curl rest;
+    string header_value = "jebiga";
+    rest.header("API", header_value);
+    cout << rest.get("https://reqres.in/api/users/2") << endl << 
+        "Curl status " << rest.curlStatus << endl << 
+        " http status " << rest.httpStatus << endl;
+
+    for (auto header : rest.responseHeader) {
+        cout << header.first << " " << header.second << endl;
+    }
+
 
     // vector<thread> thr;
 
@@ -47,20 +54,21 @@ int main () {
     // t1.join();
     // t2.join();
 
-    vector<future<string>> debx_responses;
+    // vector<future<string>> debx_responses;
 
-    for (uint i=0; i<4; i++) {
-        debx_responses.push_back(async(launch::async, [&](){
-            Curl rest;
-            // rest.timeout(6000);
-            rest.sslvalidate(false);
-            return rest.get("https://lab-it.ddns.net");
-        }));
-    }
+    // for (uint i=0; i<4; i++) {
+    //     debx_responses.push_back(async(launch::async, [&](){
+    //         Curl rest;
+    //         // rest.timeout(6000);
+    //         rest.sslverifyoff().httpv(HTTP2);
+    //         return rest.get("https://lab-it.ddns.net");
+    //     }));
+    // }
 
-    for (uint i=0; i<4; i++) {
-        cout << debx_responses[i].get() << endl << endl;
-    }
+    // for (uint i=0; i<4; i++) {
+    //     // cout << debx_responses[i].get() << endl << endl;
+    //     debx_responses[i].get();
+    // }
  
 
 }

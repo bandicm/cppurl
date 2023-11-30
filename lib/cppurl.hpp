@@ -3,6 +3,7 @@
 
 #include <curl/curl.h>
 #include <string>
+#include <string.h>
 #include <map>
 #include <iostream>
 
@@ -10,18 +11,27 @@ namespace marcelb {
 
 using namespace std;
 
-static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp); 
+static size_t bodyCallback(void *contents, size_t size, size_t nmemb, void *body_ptr); 
+static size_t headerCallback(char* buffer, size_t size, size_t nitems, void* header_ptr); 
+enum http_version { DEFAULT, HTTP1_0, HTTP1_1, HTTP2, HTTP2TLS, HTTP2PK, HTTP3 = 30};
 
 class Curl {
+    // input
     CURL *curl;
     CURLcode res;
-    string readBuffer;
     struct curl_slist *headers = NULL;
     string _useragent;
     long _timeout = 0;
-    bool _sslvalidate = true;
+    bool _sslverifyoff = false;
+    http_version _protocol_v = DEFAULT;
 
     public:
+
+    // output
+    CURLcode curlStatus;
+    long httpStatus;
+    map<string, string> responseHeader;
+    string body;
 
     /**
      * Postavi zaglavlje s ključem i vrijednošću
@@ -50,7 +60,14 @@ class Curl {
      * Omogući/onemogući validaciju certifikata kod SSL veza
     */
 
-    Curl& sslvalidate(const bool sslvalidate_);
+    Curl& sslverifyoff();
+
+    /**
+     * Postavi verziju HTTP protokola
+     * HTTP1_0 - HTTP1_1 - HTTP2 - HTTP2TLS - HTTP2PK - HTTP3 
+    */
+
+    Curl& httpv(const http_version protocol_v);
 
     /**
      * Izvršiv HTTP GET zahtjev
