@@ -12,11 +12,12 @@ using namespace marcelb;
 int main () {
 
     Curl rest;
-    string header_value = "jebiga";
-    rest.header("API", header_value);
+    string header_value = "3849f438uf9uedu8ejweoijwejd09230";
+    rest.header("API", header_value).timeout(700)
+        .httpv(HTTP2).sslverifyoff();
     cout << rest.get("https://reqres.in/api/users/2") << endl << 
         "Curl status " << rest.curlStatus << endl << 
-        " http status " << rest.httpStatus << endl;
+        "HTTP status " << rest.httpStatus << endl;
 
     for (auto header : rest.responseHeader) {
         cout << header.first << " " << header.second << endl;

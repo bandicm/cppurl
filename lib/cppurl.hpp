@@ -11,12 +11,27 @@ namespace marcelb {
 
 using namespace std;
 
+/**
+ * Callback function for parsing the HTTP body
+*/
 static size_t bodyCallback(void *contents, size_t size, size_t nmemb, void *body_ptr); 
+
+/**
+ * Callback function for parsing HTTP headers
+*/
 static size_t headerCallback(char* buffer, size_t size, size_t nitems, void* header_ptr); 
+
+/**
+ * HTTP supported protocols
+*/
 enum http_version { DEFAULT, HTTP1_0, HTTP1_1, HTTP2, HTTP2TLS, HTTP2PK, HTTP3 = 30};
 
+/**
+ * Class for curl request and response
+*/
 class Curl {
     // input
+
     CURL *curl;
     CURLcode res;
     struct curl_slist *headers = NULL;
@@ -28,60 +43,62 @@ class Curl {
     public:
 
     // output
+
+    // Curl code response status
     CURLcode curlStatus;
+    // HTTP code response status
     long httpStatus;
+    // HTTP response headers
     map<string, string> responseHeader;
+    // HTTP body
     string body;
 
     /**
-     * Postavi zaglavlje s ključem i vrijednošću
-     * Novi pozivi ne brišu stara zaglavlja, ponovljena se prepišu
+     * Set header with key and value
+     * New calls do not delete old headers, repeated ones are overwritten
     */
     Curl& header(const string& key, const string& value);
 
     /**
-     * Postavi zaglavlja iz mape
-     * Ponovan poziv prepisat će ona zaglavlja koja postoje
+     * Set headers from folder
+     * The redial will overwrite those headers that exist
     */
     Curl& header(const map<string, string> &_headers);
 
     /**
-     * Postavi u zaglavlje User-Agent
+     * Set in User-Agent header
     */
     Curl& useragent(const string& useragent_);
 
     /**
-     * Postavi vrijeme isteka zahtjeva
+     * Set request timeout
     */
-
     Curl& timeout(const long _timeout);
 
     /**
-     * Omogući/onemogući validaciju certifikata kod SSL veza
+     * Disable certificate validation for SSL connections
     */
-
     Curl& sslverifyoff();
 
     /**
-     * Postavi verziju HTTP protokola
-     * HTTP1_0 - HTTP1_1 - HTTP2 - HTTP2TLS - HTTP2PK - HTTP3 
+     * Set HTTP protocol version
+     * HTTP1_0 - HTTP1_1 - HTTP2 - HTTP2TLS - HTTP2PK - HTTP3
     */
-
     Curl& httpv(const http_version protocol_v);
 
     /**
-     * Izvršiv HTTP GET zahtjev
-     * Vraća string HTTP tjela
+     * Executable HTTP GET request
+     * Returns the HTTP body as string
     */
     string get(const string& req);
 
     /**
-     * Obriši spremljeno zaglavlje
+     * Clear saved headers
     */
     Curl& clearheader();
 
     /**
-     * Obrši trenutnog User-Agent -a
+     * Clear the current User-Agent
     */
     Curl& clearuseragent();
 
